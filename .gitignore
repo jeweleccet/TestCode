@@ -1,0 +1,23 @@
+# Build folders
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Executables
+/TestCode.exe
+/TestCode
+
+# VS Code settings
+.vscode/
+
+# Misc
+*.obj
+*.o
+*.log
+*.user
+*.swp
+*.swo
+*.sln
+*.vcxproj*
