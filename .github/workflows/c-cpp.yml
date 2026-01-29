@@ -8,18 +8,38 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v4
-    - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y cmake build-essential
-    - name: Configure CMake
-      run: cmake -S . -B build
-    - name: Build
-      run: cmake --build build
-    - name: Make script executable
-      run: chmod +x run_tests.sh
-    - name: Build and run tests
-      run: ./run_tests.sh
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y cmake build-essential
+      - name: Configure CMake
+        run: cmake -S . -B build
+      - name: Build
+        run: cmake --build build
+      - name: Make script executable
+        run: chmod +x run_tests.sh
+      - name: Build and run tests
+        run: ./run_tests.sh
+      - name: Upload test result artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: test_output
+          path: build/test_output.txt
+
+  display-test-result:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Python and pip
+        run: sudo apt-get update && sudo apt-get install -y python3 python3-pip
+      - name: Install pika (RabbitMQ client)
+        run: pip3 install pika
+      - name: Get test result artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: test_output
+          path: ./build
+      - name: Publish Eiffel event to RabbitMQ
+        run: python3 publish_eiffel.py build/test_output.txt
