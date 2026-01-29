@@ -20,4 +20,6 @@ jobs:
     - name: Build
       run: cmake --build build
     - name: Run tests
-      run: ctest --test-dir build || true
+      run: |
+        cd build
+        ctest --output-on-failure
